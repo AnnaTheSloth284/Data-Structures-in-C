@@ -1,0 +1,59 @@
+#include <stdio.h>
+
+void merge(int array[], int lb, int mid, int ub) {
+    int temp[100];
+    int i, j, k;
+    i = lb;
+    j = mid + 1;
+    k = lb;
+    while (i <= mid && j <= ub)
+        if (array[i] < array[j])
+            temp[k++] = array[i++];
+        else
+            temp[k++] = array[j++];
+
+    while (i <= mid)
+        temp[k++] = array[i++];
+
+    while (j <= ub)
+        temp[k++] = array[j++];
+
+    for (int i = lb; i <= ub; i++) {
+        array[i] = temp[i];
+    }
+}
+
+void mergeSort(int array[], int lb, int ub) {
+    if (lb < ub) {
+        int mid = (lb + ub) / 2;
+        mergeSort(array, lb, mid);
+        mergeSort(array, mid + 1, ub);
+        merge(array, lb, mid, ub);
+    }
+}
+
+int main() {
+    int n;
+    printf("Enter number of elements: ");
+    scanf("%d", &n);
+
+    int arr[100];
+    printf("Enter the elements: \n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    printf("Before Merge Sort:\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d\t", arr[i]);
+    }
+
+    mergeSort(arr, 0, n - 1);
+
+    printf("\nAfter Merge Sort:\n");
+    for (int i = 0; i < n; i++) {
+        printf("%d\t", arr[i]);
+    }
+
+    return 0;
+}
