@@ -1,0 +1,200 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+struct tree
+{
+    struct tree* right;
+    struct tree* left;
+    struct tree* next;
+    char data;
+};
+
+typedef struct tree node;
+node *head=NULL;
+
+
+char stack[100], B[100];
+int top=-1, j=0;
+int priority(char a)
+{
+    if (a=='*'||a=='/'||a=='%')
+    {
+        return 3;
+    }
+    else if (a=='('||a==')')
+    {
+        return 5;
+    }
+    else if(a=='^')
+    {
+        return 4;
+    }
+    return 2;
+
+}
+
+void pop()
+{
+    B[j]=stack[top];
+    top=j++;
+}
+
+void push(char a)
+{
+    if(a==')')
+    {
+        while(stack[top]!='(')
+        {
+            pop();
+        }
+        top--;
+    }
+    
+    else
+    {
+        top++;
+        stack[top]=a;
+    }
+}
+
+void topostfix(char A[])
+{
+    printf("Enter the infix expression: ");
+    scanf("%s",A);
+
+    for(int i=0;i<strlen(A);i++)
+    {
+        if(A[i]>='A'&&A[i]<='Z')
+        {
+            B[j]=A[i];
+            j++;
+        }
+        
+        else if(A[i]>='a'&&A[i]<='z')
+        {
+            B[j]=A[i];
+            j++;
+        }
+        
+        else
+        {
+            while(priority(A[i])<=priority(stack[top]&&(top>-1)&&(stack[top]!='('))){
+                pop();
+            }
+            push(A[i]);
+        }
+        i++;
+    }
+    
+    while(top>-1)
+    {
+        pop();
+    }
+}
+
+node *createnode(char data)
+{
+    node *temp=(node*)malloc(sizeof(node));
+    temp->data=data;
+    temp->left=NULL;
+    temp->right=NULL;
+    temp->next=NULL;
+    return temp;
+}
+
+void push1(node *ptr)
+{
+    if(head==NULL)
+        head=ptr;
+    else
+    {
+        ptr->next=head;
+        head=ptr;
+    }
+}
+
+node *pop1()
+{
+    node *ptr=head;
+    if(head!=NULL)
+    {
+        head=head->next;
+        return ptr;
+    }
+    else{
+        return NULL;
+    }
+}
+
+void inorder(node *a)
+{
+    if(a!=NULL)
+    {
+        inorder(a->left);
+        printf("%c",a->data);
+        inorder(a->right);
+    }
+}
+
+void posto(node *a)
+{
+    if(a!=NULL)
+    {
+        posto(a->left);
+        posto(a->right);
+        printf("%c",a->data);
+    }
+}
+
+void preo(node *a)
+{
+    if(a!=NULL)
+    {
+        printf("%c",a->data);
+        preo(a->left);
+        preo(a->right);
+    }
+}
+
+int main()
+{
+    node *a, *b,*exp;
+    char s[100];
+    char A[100];
+    topostfix(A);
+    for(int i=0;i<strlen(B);i++)
+    {
+        s[i]=B[i];
+    }
+    int l= strlen(s);
+    for(int i=0;i<l;i++)
+    {
+        if(s[i]=='+'||s[i]=='-'||s[i]=='*'||s[i]=='/')
+        {
+            exp=createnode(s[i]);
+            a=pop1();
+            b=pop1();
+            exp->left=b;
+            exp->right=a;
+            push1(exp);
+        }
+        
+        else
+        {
+            exp=createnode(s[i]);
+            push1(exp);
+        }
+    }
+    exp=pop1();
+    printf("\nInorder expression:");
+    inorder(exp);
+    
+    printf("\nPostorder expression");
+    posto(exp);
+    
+    printf("\nPreorder expression");
+    preo(exp);
+    
+    printf("\n\n");
+}
