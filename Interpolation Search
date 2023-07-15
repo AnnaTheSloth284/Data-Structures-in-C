@@ -1,0 +1,29 @@
+#include <stdio.h>
+
+int interpolateSer(int arr[], int n, int val){
+    int high = n-1;
+    int low = 0;
+    
+    while(val>=arr[low] && val<=arr[high] && low<=high){
+        int probe = low + (high - low) * (val - arr[low]) / (arr[high] - arr[low]);
+        
+        printf("Probe = %d\n",probe);
+        
+        if(arr[probe] == val) return probe;
+        
+        else if(arr[probe] < val) low = probe + 1;
+        
+        else high = probe - 1;
+        
+    }
+    return -1;
+}
+
+int main(){
+    int arr [] = {1, 2, 4, 8, 16, 32, 64, 128, 256};
+    int n = sizeof(arr)/sizeof(arr[0]);
+    int index = interpolateSer(arr, n, 256);
+    if(index != -1) printf("Element found at index: %d", index);
+    else printf("Element not found");
+    return 0;
+}
